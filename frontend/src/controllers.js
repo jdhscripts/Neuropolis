@@ -11,6 +11,6 @@ app.controller('NeuralNetController', ['NeuralNet', function(NeuralNet){
 	{inps : [false, true], ops : [false]},
 	{inps : [false, false], ops : [false]}
 	];
-	NeuralNet.aggregateWeightLearning(25,NeuralNet.myNet,tests);
+	NeuralNet.aggregateWeightLearning(2500,NeuralNet.myNet,tests);
 	this.net = NeuralNet.myNet;
 }]);

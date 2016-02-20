@@ -65,7 +65,7 @@ app.service('NeuralNet', ['$http',
 		this.bools = [];
 		this.nextBools = [];
 
-		this.synergy = 0.3;
+		this.synergy = 0.4;
 		this.degeneration = 0.7;
 		//this.sbools = [];
 
@@ -89,7 +89,7 @@ app.service('NeuralNet', ['$http',
 
 					for (var j = 0; j < net.outputs.length; j++) {
 						if (this.bools[net.outputs[j]] && this.bools[net.connections[i].from]) {
-							net.connections[i].weight += this.synergy;
+							net.connections[i].weight += 2*this.synergy;
 						}
 						if ((!this.bools[net.outputs[j]]) && this.bools[net.connections[i].from]) {
 							net.connections[i].weight -= this.synergy;
