@@ -6,15 +6,20 @@ var app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
+
 var args = process.argv.slice(2);
 app.set("port", args[0]);
 
+var currentData = []
+
 app.post('/', function (req, res) {
-	console.log(req.body);
+
+	currentData = req.body;
+	console.log(currentData);
 });
 
 app.all('/', function (req, res) {
-  console.log("in all");
+  console.log(currentData);
 });
 
 // app.listen(parseInt(args[0]));
