@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<body>
+		Key: <input type="text" id="key"><br>
+		Value: <input type="text" id="value"><br>
+		Add KeyPair: <input type="submit" id="keypair" value="Add Pair"><br>
+		Push to array: <input type="submit" id="pushObj" value="Push Obj"><br>
+		POST IT: <input type="submit" id="submitButton" value="POST"><br>
+	</body>
+	
+	<script type="text/javascript">
+		$(document).ready(function () {
+			//TODO: implement these
+			$("#keypair").on("click", addKeyPair);
+			$("#pushObj").on("click", pushJSON);
+			$("#submitButton").on("click", postit);
+		});
+
+		var data = [];
+		var currentJSON = {};
+
+		function addKeyPair ()
+		{
+			var key = $("#key")[0].value;
+			var value = $("#value")[0].value;
+			currentJSON[key] = value;
+		}
+
+		function pushJSON ()
+		{
+			data.push(currentJSON);
+			currentJSON = {};
+			$("#key")[0].value = "";
+			$("#value")[0].value = "";
+		}
+
+		function postit()
+		{
+			console.log(data);
+			
+			$.ajax({
+			  url: 'http://localhost:3001/'
+			, type: 'POST'
+			, contentType: 'application/json'
+			, dataType: 'json'
+			, data: JSON.stringify(data)
+			, success: function (dater) {
+				console.log(dater);
+			}});
+		}
+
+	</script>
+</html>
