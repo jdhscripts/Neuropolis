@@ -1,28 +1,35 @@
 import json
 import urllib2
 import sys
+import requests
+from flask import jsonify
 
 
 def main():
 	if len(sys.argv) < 2:
 		exit("incorrect number of arguments")
-	neural_net_file = sys.argv[0]
-	config_file = sys.argv[1]
+	neural_net_file = sys.argv[1]
+	config_file = sys.argv[2]
 	neuralNet = load_neural_net(neural_net_file, config_file)
 	process_neural_net(neuralNet)
 	output_array = neuralNet.getOutput()
 
 	with open(config_file) as data_file:
+		print "Preparing data"
 		data = json.load(data_file)
 		output_url = data['output_url']
 		deliver_outpout(output_array, output_url)
 
 def deliver_outpout(output_array, output_url):
 	data = {"output": output_array}
-	request = urllib2.Request("http://" + output_url)
-	request.add_header('neural-net output', 'application-json')
-	urllib2.urlopen(request, json.dumps(data))
-
+	data = json.dumps(data)
+	#request = urllib2.Request("http://" + output_url)
+	#request.add_header('neural-net output', 'application-json')
+	#urllib2.urlopen(request, json.dumps(data))
+	url = "http://" + output_url
+	headers = {'Content-Type' : 'application/json'} 
+	r = requests.post(url, headers=headers, data=data)
+	print r.status_code	
 
 def load_neural_net(json_path, json_config):
 	with open(json_path) as data_file:
