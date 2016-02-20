@@ -1,0 +1,16 @@
+{
+	"num_neurons" : 3,
+	"connections" : [
+			{"to" : 2, "from" : 0, "weight" : 1.0},
+			{"to" : 2, "from" : 1, "weight" : 1.0}
+		],
+	"sensors" : 2,
+	"inputs" : [
+			{"to" : 0, "from" : 0, "weight" : 1.0},
+			{"to" : 1, "from" : 1, "weight" : 1.0}
+		],
+	"outputs" : [2],
+	"thresholds" : [0.0,0.0,0.5],
+	"sensor_thresholds" : [0.5,0.5],
+	"timesteps" : 9
+}
