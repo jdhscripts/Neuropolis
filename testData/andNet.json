@@ -4,10 +4,7 @@
 			{"to" : 2, "from" : 0, "weight" : 1.0},
 			{"to" : 2, "from" : 1, "weight" : 1.0}
 		],
-	"sensors" : [
-			"localhost:3001",
-			"localhost:3002"
-			],
+	"sensors" : 2,
 	"inputs" : [
 			{"to" : 0, "from" : 0, "weight" : 1.0},
 			{"to" : 1, "from" : 1, "weight" : 1.0}
