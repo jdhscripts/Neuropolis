@@ -66,7 +66,7 @@ app.service('NeuralNet', ['$http',
 		this.nextBools = [];
 
 		this.synergy = 0.3;
-		this.degeneration = 0.0;
+		this.degeneration = 0.7;
 		//this.sbools = [];
 
 		this.trainWeights = function(steps, net, test) {
