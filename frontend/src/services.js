@@ -69,20 +69,21 @@ app.service('NeuralNet', ['$http',
 		this.degeneration = 0.0;
 		//this.sbools = [];
 
-		this.trainWeights = function(steps, net, inps, ops){
+		this.trainWeights = function(steps, net, test) {
+			var inps = test.inps;
+			var ops = test.ops;
 			for (var i = 0; i < steps; i++) {
-				this.synergyStep(net,inps, ops);
+				this.synergyStep(net, inps, ops);
 			}
 		};
 
 		this.synergyStep = function(net, inps, ops) {
-			this.updateNetwork(net,inps);
+			this.updateNetwork(net, inps);
 			for (var i = 0; i < net.connections.length; i++) {
-				if(net.connections[i].to != net.connections[i].from){
-					if(this.bools[net.connections[i].to] && this.bools[net.connections[i].from]){
+				if (net.connections[i].to != net.connections[i].from) {
+					if (this.bools[net.connections[i].to] && this.bools[net.connections[i].from]) {
 						net.connections[i].weight += this.synergy;
-					}
-					else{
+					} else {
 						net.connections[i].weight = net.connections[i].weight * this.degeneration;
 					}
 
@@ -98,12 +99,18 @@ app.service('NeuralNet', ['$http',
 			}
 		};
 
-		this.updateNetwork = function(net,inps) {
+		this.updateNetwork = function(net, inps) {
 			for (var i = 0; i < net.nodes; i++) {
-				this.checkNeuron(net,i,inps);
+				this.checkNeuron(net, i, inps);
 			}
 			for (var i = 0; i < net.nodes; i++) {
 				this.bools[i] = this.nextBools[i];
+			}
+		};
+
+		this.runNetwork = function(step, net, inps) {
+			for (var i = 0; i < step; i++) {
+				updateNetwork(net, inps);
 			}
 		};
 
@@ -121,10 +128,59 @@ app.service('NeuralNet', ['$http',
 					vl += net.inputs[i].weight;
 				}
 			}
-			if (vl > net.thresholds[n]) {this.nextBools[n] = true; return true;}
+			if (vl > net.thresholds[n]) {
+				this.nextBools[n] = true;
+				return true;
+			}
 			this.nextBools[n] = false;
 			return false;
 		};
+
+		this.testCase = function(step, net, test) {
+			var tst = angular.copy(net);
+			this.runNetwork(step, net, test.inps);
+			var chk = true;
+			for (var i = 0; i < net.outputs.length; i++) {
+				chk = chk && (net.outputs[i] == test.ops[i]);
+			}
+			return chk;
+		}
+
+		this.testCases = function(step, net, tests) {
+			var tsts = [];
+			tests.forEach(function(test) {
+				tsts.push(this.testCase(step, net, test));
+			});
+			var cnt = 0.0;
+			for (var i = 0; i < tsts.length; i++) {
+				if (tsts[i]) {
+					cnt += 1.0;
+				}
+			}
+			cnt = cnt / tsts.length
+			return cnt;
+		}
+
+		this.aggregateWeightLearning = function(step, net, tests) {
+			nets = [];
+			for (var i = 0; i < tests.length; i++) {
+				nets.push(angular.copy(net));
+			}
+			for (var i = 0; i < nets.length; i++) {
+				this.trainWeights(step, nets[i], tests[i]);
+			}
+			for (var i = 0; i < net.connections.length; i++) {
+				net.connections[i].weight = 0.0;
+			}
+			for (var i = 0; i < tests.length; i++) {
+				for (var j = 0; j < net.connections.length; j++) {
+					net.connections[j].weight += nets[i].connections[j].weight;
+				}
+			}
+			for (var i = 0; i < net.connections.length; i++) {
+				net.connections[i].weight = net.connections[i].weight / nets.length;
+			}
+		}
 
 	}
 ]);
