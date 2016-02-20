@@ -65,8 +65,8 @@ app.service('NeuralNet', ['$http',
 		this.bools = [];
 		this.nextBools = [];
 
-		this.synergy = 0.4;
-		this.degeneration = 0.7;
+		this.synergy = 1.5;
+		this.degeneration = 0.5;
 		//this.sbools = [];
 
 		this.trainWeights = function(steps, net, test) {
@@ -82,17 +82,17 @@ app.service('NeuralNet', ['$http',
 			for (var i = 0; i < net.connections.length; i++) {
 				if (net.connections[i].to != net.connections[i].from) {
 					if (this.bools[net.connections[i].to] && this.bools[net.connections[i].from]) {
-						net.connections[i].weight += this.synergy;
+						net.connections[i].weight *= this.synergy;
 					} else {
 						net.connections[i].weight = net.connections[i].weight * this.degeneration;
 					}
 
 					for (var j = 0; j < net.outputs.length; j++) {
 						if (this.bools[net.outputs[j]] && this.bools[net.connections[i].from]) {
-							net.connections[i].weight += 2*this.synergy;
+							net.connections[i].weight *= this.synergy;
 						}
 						if ((!this.bools[net.outputs[j]]) && this.bools[net.connections[i].from]) {
-							net.connections[i].weight -= this.synergy;
+							//net.connections[i].weight -= this.synergy;
 						}
 					}
 				}
@@ -144,7 +144,7 @@ app.service('NeuralNet', ['$http',
 				chk = chk && (net.outputs[i] == test.ops[i]);
 			}
 			return chk;
-		}
+		};
 
 		this.testCases = function(step, net, tests) {
 			var tsts = [];
@@ -159,12 +159,14 @@ app.service('NeuralNet', ['$http',
 			}
 			cnt = cnt / tsts.length
 			return cnt;
-		}
+		};
 
 		this.aggregateWeightLearning = function(step, net, tests) {
 			nets = [];
 			for (var i = 0; i < tests.length; i++) {
-				nets.push(angular.copy(net));
+				var nnn = angular.copy(net);
+				this.trainWeights(step, nnn, tests[i]);
+				nets.push(nnn);
 			}
 			for (var i = 0; i < nets.length; i++) {
 				this.trainWeights(step, nets[i], tests[i]);
@@ -180,7 +182,7 @@ app.service('NeuralNet', ['$http',
 			for (var i = 0; i < net.connections.length; i++) {
 				net.connections[i].weight = net.connections[i].weight / nets.length;
 			}
-		}
+		};
 
 	}
 ]);

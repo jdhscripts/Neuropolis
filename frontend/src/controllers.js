@@ -13,4 +13,5 @@ app.controller('NeuralNetController', ['NeuralNet', function(NeuralNet){
 	];
 	NeuralNet.aggregateWeightLearning(2500,NeuralNet.myNet,tests);
 	this.net = NeuralNet.myNet;
+	this.net.connections = this.net.connections;//.filter(function(el){true});
 }]);
