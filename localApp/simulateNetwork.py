@@ -1,5 +1,6 @@
 import exceptions
 import json
+import httplib
 
 
 def main(): 
@@ -46,7 +47,7 @@ def parse_neuron_connection(connection, neurons):
 	return neuron	
 
 def process_neural_net(neuralNet):
-	while(neuralNet.remainininputsgRuns > 0):
+	while(neuralNet.remainingRuns > 0):
 		neuralNet.timeStep()
 
 
@@ -57,16 +58,16 @@ class NeuralNet():
 		self.outputs = outputs
 		self.remainingRuns = remainingRuns
 
-	def timeStep():
+	def timeStep(self):
 		for neuron in self.neurons:
 			neuron.setNextState()
 		for neuron in self.neurons:
 			neuron.update()
 		remainingRuns -= 1
 
-	def getOutput():
+	def getOutput(self):
 		finalOut = []
-		for i in self.outputs
+		for i in self.outputs:
 			finalOut.append(self.neurons[i])
 		return finalOut
 
@@ -81,9 +82,13 @@ class Sensor():
 		self.nextActive = False 
 
 	def setNextState(self):
-		print("TODO throw http at something")
 
-	def update(): 
+		conn = httplib.HTTPConnection('http://' + self.port) # TODO
+		conn.request("HEAD", "/index.html")
+		result = conn.getResponse()
+		print(result)
+
+	def update(self): 
 		if self.nextActive == None:
 			raise exceptions.NextStateNullException()
 		self.isActive = self.nextActive

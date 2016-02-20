@@ -14,7 +14,7 @@ def test():
 
 
 def test00():
-neural_net = sim.load_neural_net('../testData/andNet.json')
+	neural_net = sim.load_neural_net('../testData/andNet.json')
 	# MOCK Inputs
 	sim.process_neural_net(neural_net)
 	if neural_net.getOutput():
@@ -35,7 +35,8 @@ def test01():
 	return True
 
 
-def test10():neural_net = sim.load_neural_net('../testData/andNet.json')
+def test10():
+	neural_net = sim.load_neural_net('../testData/andNet.json')
 	# MOCK Inputs
 	sim.process_neural_net(neural_net)
 	if neural_net.getOutput():
@@ -46,7 +47,8 @@ def test10():neural_net = sim.load_neural_net('../testData/andNet.json')
 
 
 
-def test11():neural_net = sim.load_neural_net('../testData/andNet.json')
+def test11():
+	neural_net = sim.load_neural_net('../testData/andNet.json')
 	# MOCK Inputs
 	sim.process_neural_net(neural_net)
 	if not neural_net.getOutput():
