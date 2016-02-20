@@ -47,7 +47,7 @@ app.service('NeuralNet', ['$http',
 
 			for (var i = 0; i < nodes; i++) {
 				var toadd = Math.random();
-				nnet.thresholds.push(toadd);
+				nnet.thresholds.push(0.5);
 			}
 
 			for (var i = 0; i < sensors; i++) {
@@ -65,8 +65,8 @@ app.service('NeuralNet', ['$http',
 		this.bools = [];
 		this.nextBools = [];
 
-		this.synergy = 1.5;
-		this.degeneration = 0.5;
+		this.synergy = 2.0;
+		this.degeneration = 0.9;
 		//this.sbools = [];
 
 		this.trainWeights = function(steps, net, test) {
