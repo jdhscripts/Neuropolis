@@ -14,5 +14,6 @@
 		],
 	"outputs" : [2],
 	"thresholds" : [0.0,0.0,1.5],
+	"sensor_thresholds" : [0.5,0.5],
 	"timesteps" : 9
 }
