@@ -30,7 +30,7 @@ app.service('NeuralNet', ['$http',
 				}
 			}
 
-			for (var i = 0 + outputs; i < nodes; i++) {
+			for (var i = outputs; i < nodes; i++) {
 				for (var j = 0; j < sensors; j++) {
 					var toadd = Math.random();
 					nnet.inputs.push({
@@ -52,7 +52,7 @@ app.service('NeuralNet', ['$http',
 
 			for (var i = 0; i < sensors; i++) {
 				var toadd = Math.random();
-				nnet.sensor_thresholds.push(toadd);
+				nnet.sensor_thresholds.push(0.5);
 			}
 
 
@@ -60,90 +60,97 @@ app.service('NeuralNet', ['$http',
 			return nnet;
 		}
 
-		this.myNet = {};
-		this.state = {};
-		this.bools = [];
-		this.nextBools = [];
+		//this.bools = [];
+		//this.nextBools = [];
 
-		this.synergy = 1.05;
-		this.degeneration = 0.95;
+		/*this.synergy = 1.05;
+		this.degeneration = 0.95;*/
 		//this.sbools = [];
 
-		this.trainWeights = function(steps, net, test) {
+		/*this.trainWeights = function(steps, net, test) {
 			var inps = test.inps;
 			var ops = test.ops;
 			for (var i = 0; i < steps; i++) {
 				this.synergyStep(net, inps, ops);
 			}
-		};
+		};*/
 
-		this.synergyStep = function(net, inps, ops) {
+		/*this.synergyStep = function(net, inps, ops, bools) {
 			this.updateNetwork(net, inps);
 			for (var i = 0; i < net.connections.length; i++) {
 				if (net.connections[i].to != net.connections[i].from) {
-					if (this.bools[net.connections[i].to] && this.bools[net.connections[i].from]) {
+					if (bools[net.connections[i].to] && bools[net.connections[i].from]) {
 						net.connections[i].weight *= this.synergy;
 					} else {
 						net.connections[i].weight = net.connections[i].weight * this.degeneration;
 					}
 
 					for (var j = 0; j < net.outputs.length; j++) {
-						if (this.bools[net.outputs[j]] && this.bools[net.connections[i].from]) {
+						if (bools[net.outputs[j]] && bools[net.connections[i].from]) {
 							net.connections[i].weight *= this.synergy;
 						}
-						if ((!this.bools[net.outputs[j]]) && this.bools[net.connections[i].from]) {
+						if ((!bools[net.outputs[j]]) && bools[net.connections[i].from]) {
 							//net.connections[i].weight -= this.synergy;
 						}
 					}
 				}
 			}
+		};*/
+
+		this.updateNetwork = function(net, inps, bools) {
+			var nxtn = [];
+			for (var i = 0; i < net.num_neurons; i++) {
+				nxtn.push(this.checkNeuron(net, i, inps, bools));
+			}
+			return nxtn;
 		};
 
-		this.updateNetwork = function(net, inps) {
-			for (var i = 0; i < net.nodes; i++) {
-				this.checkNeuron(net, i, inps);
+		this.runNetwork = function(step, net, inps, bools) {
+			//var bools = [];
+			//nextBools = [];
+			/*for (var i = 0; i < net.num_neurons; i++) {
+				bools.push(false);
+				nextBools.push(false);
+			}*/
+			if(step >= 0){
+				return this.runNetwork(step - 1, net, inps, this.updateNetwork(net, inps, bools));
 			}
-			for (var i = 0; i < net.nodes; i++) {
-				this.bools[i] = this.nextBools[i];
-			}
+			return bools;
 		};
 
-		this.runNetwork = function(step, net, inps) {
-			for (var i = 0; i < step; i++) {
-				this.updateNetwork(net, inps);
-			}
-		};
-
-		this.checkNeuron = function(net, n, inps) {
-			var vl = vl += net.connections.weight;
-			0.0;
-			vl += net.connections.weight;
+		this.checkNeuron = function(net, n, inps, bools) {
+			var vl = 0.0;//vl //+= net.connections.weight;
+			//0.0;
+			//vl += net.connections.weight;
 			for (var i = 0; i < net.connections.length; i++) {
-				if (net.connections[i].to == n && this.bools[net.connections[i].from]) {
+				if (net.connections[i].to == n && bools[net.connections[i].from]) {
 					vl += net.connections[i].weight;
 				}
 			}
 			for (var i = 0; i < net.inputs.length; i++) {
-				if (net.inputs[i].to == n && this.inps[net.connections[i].from]) {
+				if (net.inputs[i].to === n && inps[net.inputs[i].from]) {
 					vl += net.inputs[i].weight;
 				}
 			}
 			if (vl > net.thresholds[n]) {
-				this.nextBools[n] = true;
 				return true;
 			}
-			this.nextBools[n] = false;
 			return false;
 		};
 
 		this.testCase = function(step, net, test) {
-			var tst = angular.copy(net);
-			this.runNetwork(step, net, test.inps);
-			var chk = true;
-			for (var i = 0; i < net.outputs.length; i++) {
-				chk = chk && (net.outputs[i] == test.ops[i]);
+			var tbls = [];
+			for (var i = 0; i < net.num_neurons; i++) {
+				tbls.push(false);
 			}
-			return chk;
+			//var tst = angular.copy(net);
+			var bools = this.runNetwork(step, net, test.inps, tbls);
+			for (var i = 0; i < net.outputs.length; i++) {
+				if(bools[net.outputs[i]] != test.ops[i]){
+					return false;
+				}
+			}
+			return true;
 		};
 
 		this.testCases = function(step, net, tests) {
@@ -158,11 +165,27 @@ app.service('NeuralNet', ['$http',
 					cnt += 1.0;
 				}
 			}
-			cnt = cnt / tsts.length
+			cnt = cnt / tsts.length;
 			return cnt;
 		};
 
-		this.aggregateWeightLearning = function(step, net, tests) {
+		this.testCasest = function(step, net, tests) {
+			var tsts = [];
+			var that = this;
+			tests.forEach(function(test) {
+				tsts.push(that.testCase(step, net, test));
+			});
+			var cnt = 0.0;
+			for (var i = 0; i < tsts.length; i++) {
+				if (tsts[i]) {
+					cnt += 1.0;
+				}
+			}
+			cnt = cnt / tsts.length
+			return tsts;
+		};
+
+		/*this.aggregateWeightLearning = function(step, net, tests) {
 			nets = [];
 			for (var i = 0; i < tests.length; i++) {
 				var nnn = angular.copy(net);
@@ -183,7 +206,7 @@ app.service('NeuralNet', ['$http',
 			for (var i = 0; i < net.connections.length; i++) {
 				net.connections[i].weight = net.connections[i].weight / nets.length;
 			}
-		};
+		};*/
 
 		this.populate = function(ipop, nnodes, sensors, outputs){
 			var nns = [];
@@ -196,8 +219,19 @@ app.service('NeuralNet', ['$http',
 		this.evolve = function(stps, pop, step, tests){
 			var nns = pop;
 			var that = this;
-			if (stps < 0 || pop.length < 2) {return pop[0];}
-			nns.sort(function(a, b){that.testCases(step, a, tests) - that.testCases(step, b, tests)});
+			if (stps < 0 || nns.length < 2) {return pop[0];}
+			nns.sort(function(a, b){
+				var f1 = that.testCases(step, a, tests);
+				var f2 = that.testCases(step, b, tests);
+				 if(f1 > f1){
+				 	return -1;
+				 }
+				 if(f2 > f1){
+				 	return 1;
+				 }
+				 return 0;
+			});
+			//return nns;
 			for(var i = 0; i < nns.length; i++){
 				this.mutate(nns[i]);
 			}
@@ -206,17 +240,18 @@ app.service('NeuralNet', ['$http',
 				nnns.push(this.breed(nns[i], nns[i+1]));
 			}
 			return this.evolve(stps - 1, nnns, step, tests);
+			//return nns;
 		};
 
 		this.mutate = function(net){
 			for (var i = 0; i < net.connections.length; i++) {
-				net.connections[i].weight += (Math.random() - 0.5)/3.0;
+				net.connections[i].weight += (Math.random() - 0.5)/10.0;
 			}
 			for (var i = 0; i < net.inputs.length; i++) {
-				net.inputs[i].weight += (Math.random() - 0.5)/3.0;
+				net.inputs[i].weight += (Math.random() - 0.5)/10.0;
 			}
 			for (var i = 0; i < net.thresholds.length; i++) {
-				net.thresholds[i] += (Math.random() - 0.5)/3.0;
+				net.thresholds[i] += (Math.random() - 0.5)/10.0;
 			}
 			return net;
 		}
