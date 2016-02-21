@@ -7,20 +7,8 @@ app.controller('NeuralNetController', ['NeuralNet', function(NeuralNet){
 	//Outputs = [true];
 	tests = [
 	{inps : [true, true], ops : [true]},
-	{inps : [true, false], ops : [false]},
-	{inps : [false, true], ops : [false]},
-	{inps : [false, false], ops : [false]},
-	{inps : [true, true], ops : [true]},
-	{inps : [true, false], ops : [false]},
-	{inps : [false, true], ops : [false]},
-	{inps : [false, false], ops : [false]},
-	{inps : [true, true], ops : [true]},
-	{inps : [true, false], ops : [false]},
-	{inps : [false, true], ops : [false]},
-	{inps : [false, false], ops : [false]},
-	{inps : [true, true], ops : [true]},
-	{inps : [true, false], ops : [false]},
-	{inps : [false, true], ops : [false]},
+	{inps : [true, false], ops : [true]},
+	{inps : [false, true], ops : [true]},
 	{inps : [false, false], ops : [false]}
 	];
 
