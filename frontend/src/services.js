@@ -210,13 +210,13 @@ app.service('NeuralNet', ['$http',
 
 		this.mutate = function(net){
 			for (var i = 0; i < net.connections.length; i++) {
-				net.connections[i].weight += (Math.random() - 0.5)/10;
+				net.connections[i].weight += (Math.random() - 0.5)/3.0;
 			}
 			for (var i = 0; i < net.inputs.length; i++) {
-				net.inputs[i].weight += (Math.random() - 0.5)/10;
+				net.inputs[i].weight += (Math.random() - 0.5)/3.0;
 			}
 			for (var i = 0; i < net.thresholds.length; i++) {
-				net.thresholds[i] += (Math.random() - 0.5)/10;
+				net.thresholds[i] += (Math.random() - 0.5)/3.0;
 			}
 			return net;
 		}
