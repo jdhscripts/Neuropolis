@@ -7,8 +7,8 @@ app.controller('NeuralNetController', ['NeuralNet', function(NeuralNet){
 	//Outputs = [true];
 	tests = [
 	{inps : [true, true], ops : [true]},
-	{inps : [true, false], ops : [true]},
-	{inps : [false, true], ops : [true]},
+	{inps : [true, false], ops : [false]},
+	{inps : [false, true], ops : [false]},
 	{inps : [false, false], ops : [false]}
 	];
 
@@ -29,12 +29,12 @@ app.controller('NeuralNetController', ['NeuralNet', function(NeuralNet){
 	"timesteps" : 9
 };
 	//NeuralNet.aggregateWeightLearning(400,NeuralNet.myNet,tests);
-	this.nets = NeuralNet.populate(10000, 3, 2, 1);
+	this.nets = NeuralNet.populate(100, 5, 2, 1);
 	//this.net = //[this.nets[0],this.nets[1],NeuralNet.breed(this.nets[0], this.nets[1])];
 
-	this.net = NeuralNet.evolve(10, this.nets, 25, tests);
+	this.net = NeuralNet.evolve(10, this.nets, 32, tests);
 	//this.val = [NeuralNet.testCases(25, this.net, tests),NeuralNet.testCases(25, this.net[this.net.length - 1], tests)];
-	this.val = NeuralNet.testCases(25, this.net, tests);
+	this.val = NeuralNet.testCases(32, this.net, tests);
 	//var bools = [false, false, false];
 	//var inps = [true, true];
 	//this.val = NeuralNet.updateNetwork(net, inps, bools);//

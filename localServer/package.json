@@ -1,0 +1,17 @@
+{
+  "name": "lsv",
+  "version": "1.0.0",
+  "description": "",
+  "main": "neuropolisServer.js",
+  "dependencies": {
+    "deepcopy": "^0.6.1",
+    "express": "^4.13.4",
+    "restling": "^0.9.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

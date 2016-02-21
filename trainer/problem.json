@@ -1,0 +1,19 @@
+[{
+	"inps": [true, true, false],
+	"ops": [true, false]
+}, {
+	"inps": [true, false, true],
+	"ops": [true, false]
+},{
+	"inps": [false, true, true],
+	"ops": [true, false]
+},{
+	"inps": [true, false, false],
+	"ops": [false, true]
+},{
+	"inps": [false, true, false],
+	"ops": [false, true]
+},{
+	"inps": [false, false, true],
+	"ops": [false, true]
+}]
